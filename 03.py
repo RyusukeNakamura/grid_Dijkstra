@@ -1,21 +1,21 @@
-from collections import deque
+import heapq
 h, w = map(int, input().split())
 T = [list(map(int, input().split())) for _ in range(h)]
 
 seen = [[False for i in range(w)] for j in range(h)]
 
-deq = deque()
-deq.append((0, 0, (0, -1, -1)))
+hq = []
+heapq.heapify(hq)
+heapq.heappush(hq, (0, 0, 0))
 
 dp = [[[100000, -1, -1] for i in range(w)] for j in range(h)]
 dp[0][0][0] = T[0][0]
-
+ 
 vy = (1, -1, 0, 0)
 vx = (0, 0, 1, -1)
 
 for _ in range(10**9):
-    cy, cx, t = deq.popleft()
-    cost, py, px = t
+    cost, cy, cx = heapq.heappop(hq)
     seen[cy][cx] = True
 
     for y, x in zip(vy, vx):
@@ -24,11 +24,11 @@ for _ in range(10**9):
 
         if not (ny in (-1, h) or nx in (-1, w)) and not seen[ny][nx]:
             if cost + T[ny][nx] < dp[ny][nx][0]:
-                dp[ny][nx] = [dp[cy][cx][0] + T[ny][nx], cy, cx]
-
-            deq.append((ny, nx, tuple(dp[ny][nx])))
+                c = cost + T[ny][nx]
+                dp[ny][nx] = [c, cy, cx]
+                heapq.heappush(hq, (c, ny, nx))
     
-    if not deq:
+    if not hq:
         break
 
 py, px = h-1, w-1
