@@ -22,7 +22,7 @@ vx = (0, 0, 1, -1)
 edNode = None
 
 for _ in range(10**9):
-    cost, index, Node = heapq.heappop(hq)
+    cc, index, Node = heapq.heappop(hq)
     cy = Node.y
     cx = Node.x
     if cy == h-1 and cx == w - 1:
@@ -31,14 +31,14 @@ for _ in range(10**9):
 
     seen[cy][cx] = True
 
-    for y, x in zip(vy, vx):
-        ny = cy + y
-        nx = cx + x
+    for dy, dx in zip(vy, vx):
+        ny = cy + dy
+        nx = cx + dx
 
         if (ny in (-1, h) or nx in (-1, w)) or seen[ny][nx]:
             continue
         
-        c = cost + T[ny][nx]
+        c = cc + T[ny][nx]
         nextNode = NodeInfo(ny, nx, c, Node)
         heapq.heappush(hq, (c, id(nextNode), nextNode))
     
