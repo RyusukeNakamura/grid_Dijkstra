@@ -18,23 +18,32 @@ class NodeInfo:
     def __hash__(self):
         return hash((self.y, self.x, self.ticket, self.cost))
 
+    def __lt__(self, other):
+        if not isinstance(other, NodeInfo):
+            return False
+        return self.cost < other.cost
+
+    def __gt__(self, other):
+        return not self.__lt__(other)
 
 stNode = NodeInfo(0, 0, n, 0)
 seen = set()
 
 hq = []
 heapq.heapify(hq)
-heapq.heappush(hq, (0, id(stNode), stNode))
+heapq.heappush(hq, stNode)
 
 vy = (1, -1, 0, 0)
 vx = (0, 0, 1, -1)
 edNode = None
 
 for _ in range(10**9):
-    cc, index, Node = heapq.heappop(hq)
+    Node = heapq.heappop(hq)
     cy = Node.y
     cx = Node.x
     t = Node.ticket
+    cc = Node.cost
+
     if cy == h-1 and cx == w - 1:
         edNode = Node
         break
@@ -53,10 +62,10 @@ for _ in range(10**9):
         
         c = cc + T[ny][nx]
         nextNode = NodeInfo(ny, nx, t, c)
-        heapq.heappush(hq, (c, id(nextNode), nextNode))
+        heapq.heappush(hq, nextNode)
         if t > 0:
             nextNode_t = NodeInfo(ny, nx, t - 1, cc)
-            heapq.heappush(hq, (cc, id(nextNode_t), nextNode_t))
+            heapq.heappush(hq, nextNode_t)
 
     
     if not hq:
